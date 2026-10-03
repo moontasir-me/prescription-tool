@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "step": "followUps",
+  "order": 7,
+  "savedAt": "2026-10-03T07:43:31.788Z",
+  "visitId": 1791013322484,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": [
+    {
+      "id": 1791013330485,
+      "text": "This is Follow-up"
+    }
+  ]
+}

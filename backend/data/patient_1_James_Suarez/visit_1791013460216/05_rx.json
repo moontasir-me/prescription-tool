@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "step": "rx",
+  "order": 5,
+  "savedAt": "2026-10-03T07:44:55.120Z",
+  "visitId": 1791013460216,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": [
+    {
+      "id": 1,
+      "medicine": "Napa",
+      "dosage": "1-1-1",
+      "duration": "7 days",
+      "instruction": "",
+      "strength": "500 mg",
+      "form": "Tab.",
+      "generic": "Paracetamol"
+    }
+  ]
+}

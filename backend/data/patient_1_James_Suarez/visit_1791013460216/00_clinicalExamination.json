@@ -1,0 +1,131 @@
+{
+  "schemaVersion": 1,
+  "step": "clinicalExamination",
+  "order": 0,
+  "savedAt": "2026-10-03T07:44:20.219Z",
+  "visitId": 1791013460216,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": {
+    "heightFeet": "",
+    "heightInch": "",
+    "weight": "",
+    "bmi": "0.0",
+    "bsa": "0.0",
+    "onExamination": [
+      {
+        "id": 1791013445068.4814,
+        "term": "ANEMIA",
+        "value": "NAD"
+      },
+      {
+        "id": 1791013445069.5054,
+        "term": "DEHYDRATION",
+        "value": ""
+      },
+      {
+        "id": 1791013445070.1318,
+        "term": "JAUNDICE",
+        "value": "NAD"
+      }
+    ],
+    "healthScreening": [
+      {
+        "id": 1791013445068.2124,
+        "term": "Temperature",
+        "value": "98"
+      },
+      {
+        "id": 1791013445069.618,
+        "term": "HFA",
+        "value": ""
+      },
+      {
+        "id": 1791013445070.1875,
+        "term": "WFA",
+        "value": ""
+      },
+      {
+        "id": 1791013445071.3357,
+        "term": "MUAC",
+        "value": ""
+      },
+      {
+        "id": 1791013445072.97,
+        "term": "Pulse Rate",
+        "value": ""
+      }
+    ],
+    "systemicExamination": [
+      {
+        "id": 1791013445068.9915,
+        "term": "ABDOMEN",
+        "value": "NAD"
+      },
+      {
+        "id": 1791013445069.8088,
+        "term": "HEART",
+        "value": ""
+      },
+      {
+        "id": 1791013445070.151,
+        "term": "LUNG",
+        "value": ""
+      }
+    ],
+    "investigationResults": [
+      {
+        "id": 1791013445068.0928,
+        "term": "CBC",
+        "value": ""
+      },
+      {
+        "id": 1791013445069.88,
+        "term": "Blood Sugar",
+        "value": ""
+      },
+      {
+        "id": 1791013445070.1667,
+        "term": "Urine R/E",
+        "value": ""
+      },
+      {
+        "id": 1791013445071.735,
+        "term": "X-Ray",
+        "value": ""
+      },
+      {
+        "id": 1791013445072.3254,
+        "term": "ECG",
+        "value": ""
+      },
+      {
+        "id": 1791013445073.0967,
+        "term": "Ultrasound",
+        "value": ""
+      },
+      {
+        "id": 1791013445074.992,
+        "term": "CT Scan",
+        "value": ""
+      },
+      {
+        "id": 1791013445075.8613,
+        "term": "MRI",
+        "value": ""
+      },
+      {
+        "id": 1791013445076.573,
+        "term": "Biopsy",
+        "value": ""
+      }
+    ],
+    "referredBy": "",
+    "referredTo": ""
+  }
+}

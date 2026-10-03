@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "step": "rx",
+  "order": 5,
+  "savedAt": "2026-10-03T07:43:14.304Z",
+  "visitId": 1791013322484,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": [
+    {
+      "id": 1791013328686,
+      "medicine": "Navamox",
+      "dosage": "1-1-1",
+      "duration": "7 days",
+      "instruction": "",
+      "strength": "250 mg",
+      "form": "Cap.",
+      "generic": "Amoxicillin Trihydrate"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "step": "chiefComplaints",
+  "order": 1,
+  "savedAt": "2026-10-03T07:42:38.788Z",
+  "visitId": 1791013322484,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": [
+    {
+      "id": 1791013324417,
+      "text": "It is CC"
+    }
+  ]
+}

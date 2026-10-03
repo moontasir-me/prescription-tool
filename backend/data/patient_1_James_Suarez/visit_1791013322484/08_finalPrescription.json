@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "step": "finalPrescription",
+  "order": 8,
+  "savedAt": "2026-10-03T07:43:49.504Z",
+  "visitId": 1791013322484,
+  "patient": {
+    "id": 1,
+    "name": "James Suarez",
+    "serial": "555-0118",
+    "dob": "1977-08-12",
+    "gender": "Male"
+  },
+  "data": {
+    "id": 1791013322484,
+    "date": "Saturday, 03 October 2026",
+    "dateISO": "2026-10-03",
+    "chiefComplaints": [
+      {
+        "id": 1791013324417,
+        "text": "It is CC"
+      }
+    ],
+    "diagnosis": [
+      {
+        "id": 1791013325467,
+        "text": "It is Dx"
+      }
+    ],
+    "investigations": [
+      {
+        "id": 1791013326501,
+        "text": "It is Inv"
+      }
+    ],
+    "ancPncNotes": [
+      {
+        "id": 1791013327500,
+        "text": "No"
+      }
+    ],
+    "rxList": [
+      {
+        "id": 1791013328686,
+        "medicine": "Navamox",
+        "dosage": "1-1-1",
+        "duration": "7 days",
+        "instruction": "",
+        "strength": "250 mg",
+        "form": "Cap.",
+        "generic": "Amoxicillin Trihydrate"
+      }
+    ],
+    "adviceList": [
+      {
+        "id": 1791013329519,
+        "text": "It is Advice"
+      }
+    ],
+    "followUps": [
+      {
+        "id": 1791013330485,
+        "text": "This is Follow-up"
+      }
+    ],
+    "heightFeet": "",
+    "heightInch": "",
+    "weight": "",
+    "bmi": "0.0",
+    "bsa": "0.0",
+    "onExamination": [
+      {
+        "id": 1791013320677.178,
+        "term": "ANEMIA",
+        "value": ""
+      },
+      {
+        "id": 1791013320678.6877,
+        "term": "DEHYDRATION",
+        "value": ""
+      },
+      {
+        "id": 1791013320679.5183,
+        "term": "JAUNDICE",
+        "value": ""
+      }
+    ],
+    "healthScreening": [
+      {
+        "id": 1791013320677.9753,
+        "term": "Temperature",
+        "value": ""
+      },
+      {
+        "id": 1791013320678.1494,
+        "term": "HFA",
+        "value": ""
+      },
+      {
+        "id": 1791013320679.046,
+        "term": "WFA",
+        "value": ""
+      },
+      {
+        "id": 1791013320680.7563,
+        "term": "MUAC",
+        "value": ""
+      },
+      {
+        "id": 1791013320681.6123,
+        "term": "Pulse Rate",
+        "value": ""
+      }
+    ],
+    "systemicExamination": [
+      {
+        "id": 1791013320677.8374,
+        "term": "ABDOMEN",
+        "value": ""
+      },
+      {
+        "id": 1791013320678.6128,
+        "term": "HEART",
+        "value": ""
+      },
+      {
+        "id": 1791013320679.029,
+        "term": "LUNG",
+        "value": ""
+      }
+    ],
+    "investigationResults": [
+      {
+        "id": 1791013320677.3633,
+        "term": "CBC",
+        "value": ""
+      },
+      {
+        "id": 1791013320678.2385,
+        "term": "Blood Sugar",
+        "value": ""
+      },
+      {
+        "id": 1791013320679.67,
+        "term": "Urine R/E",
+        "value": ""
+      },
+      {
+        "id": 1791013320680.1821,
+        "term": "X-Ray",
+        "value": ""
+      },
+      {
+        "id": 1791013320681.8806,
+        "term": "ECG",
+        "value": ""
+      },
+      {
+        "id": 1791013320682.5696,
+        "term": "Ultrasound",
+        "value": ""
+      },
+      {
+        "id": 1791013320683.778,
+        "term": "CT Scan",
+        "value": ""
+      },
+      {
+        "id": 1791013320684.8904,
+        "term": "MRI",
+        "value": ""
+      },
+      {
+        "id": 1791013320685.0815,
+        "term": "Biopsy",
+        "value": ""
+      }
+    ],
+    "referredBy": "",
+    "referredTo": ""
+  }
+}
