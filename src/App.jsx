@@ -9,7 +9,20 @@ import {
 // ==========================================
 // APP VERSION
 // ==========================================
-const APP_DATA_VERSION = 'v19';
+const APP_DATA_VERSION = 'v20';
+
+// ==========================================
+// DOCTOR PROFILE (single source of truth for every screen and the printed prescription)
+// Chamber / phone / BMDC number are left empty on purpose: they are printed only when filled in here.
+// ==========================================
+const DOCTOR_PROFILE = {
+  name: 'Dr. Tanim Moontasir',
+  degrees: 'MCPS (UK), FCPS (IND), FRCP (UK), MBBS (BD), MD (Pulmonology)',
+  speciality: 'Internal Medicine & General Surgery',
+  chamber: '',
+  phone: '',
+  regNo: '',
+};
 
 // ==========================================
 // PREDEFINED TERMS
@@ -25,11 +38,11 @@ const SECTION_ORDER = ['chiefComplaints', 'diagnosis', 'investigations', 'ancPnc
 // INITIAL MOCK DATA
 // ==========================================
 const INITIAL_PATIENTS = [
-  { id: 1, name: 'James Suarez', serial: '555-0118', dob: '1977-08-12', gender: 'Male', contact: '405-880-0379', address: '525 Meadow Drive, Oklahoma City, US', bloodGroup: 'B (ve)', visits: 3, tags: ['Diabetic', 'Allergic', 'Surcical History: Yes', 'G/H: High Pressure'], lastVisit: '15 Nov 2022', visitHistory: [] },
-  { id: 2, name: 'Esther Howard', serial: '308-0121', dob: '1996-03-04', gender: 'Female', contact: '405-880-0380', address: '123 Main St, Oklahoma City, US', bloodGroup: 'O+', visits: 1, tags: [], lastVisit: '10 Nov 2022', visitHistory: [] },
-  { id: 3, name: 'Jacob Jones', serial: '671-0110', dob: '1952-01-20', gender: 'Male', contact: '405-880-0381', address: '456 Oak St, Oklahoma City, US', bloodGroup: 'A+', visits: 1, tags: ['G/H: High Pressure'], lastVisit: '05 Nov 2022', visitHistory: [] },
-  { id: 4, name: 'Floyd Miles', serial: '702-0122', dob: '1970-12-15', gender: 'Male', contact: '405-880-0382', address: '789 Pine St, Oklahoma City, US', bloodGroup: 'AB+', visits: 0, tags: ['Diabetic'], lastVisit: '01 Nov 2022', visitHistory: [] },
-  { id: 5, name: 'Ronald Richards', serial: '555-0100', dob: '1941-10-10', gender: 'Male', contact: '405-880-0383', address: '321 Elm St, Oklahoma City, US', bloodGroup: 'B+', visits: 0, tags: ['Allergic'], lastVisit: '28 Oct 2022', visitHistory: [] },
+  { id: 1, name: 'James Suarez', serial: '555-0118', dob: '1977-08-12', gender: 'Male', contact: '+880 1700-000001', address: 'House 12, Road 5, Dhanmondi, Dhaka', bloodGroup: 'B (ve)', visits: 3, tags: ['Diabetic', 'Allergic', 'Surgical History: Yes', 'G/H: High Pressure'], lastVisit: '15 Nov 2022', visitHistory: [] },
+  { id: 2, name: 'Esther Howard', serial: '308-0121', dob: '1996-03-04', gender: 'Female', contact: '+880 1700-000002', address: 'Flat 4B, Mirpur DOHS, Dhaka', bloodGroup: 'O+', visits: 1, tags: [], lastVisit: '10 Nov 2022', visitHistory: [] },
+  { id: 3, name: 'Jacob Jones', serial: '671-0110', dob: '1952-01-20', gender: 'Male', contact: '+880 1700-000003', address: 'Road 27, Banani, Dhaka', bloodGroup: 'A+', visits: 1, tags: ['G/H: High Pressure'], lastVisit: '05 Nov 2022', visitHistory: [] },
+  { id: 4, name: 'Floyd Miles', serial: '702-0122', dob: '1970-12-15', gender: 'Male', contact: '+880 1700-000004', address: 'Sector 7, Uttara, Dhaka', bloodGroup: 'AB+', visits: 0, tags: ['Diabetic'], lastVisit: '01 Nov 2022', visitHistory: [] },
+  { id: 5, name: 'Ronald Richards', serial: '555-0100', dob: '1941-10-10', gender: 'Male', contact: '+880 1700-000005', address: 'Lalmatia Block D, Dhaka', bloodGroup: 'B+', visits: 0, tags: ['Allergic'], lastVisit: '28 Oct 2022', visitHistory: [] },
 ];
 
 // ==========================================
@@ -42,16 +55,16 @@ const rxRows = (prefix, arr) => arr.map(([form, medicine, strength, dosage, dura
 const SAMPLE_VISITS = {
   1: [
     {
-      id: 9001, date: 'Tuesday, 12 July 2022',
+      id: 9001, date: 'Tuesday, 12 July 2022', dateISO: '2022-07-12',
       heightFeet: '5', heightInch: '9', weight: '84', bmi: '27.35', bsa: '2.00',
       onExamination: termRows([['ANEMIA', 'Absent'], ['DEHYDRATION', 'Absent'], ['JAUNDICE', 'Absent']], 'v1oe'),
-      healthScreening: termRows([['Temperature', '98.4 °F'], ['Pulse Rate', '82 /min']], 'v1hs'),
+      healthScreening: termRows([['Blood Pressure', '148/92 mmHg'], ['Temperature', '98.4 °F'], ['Pulse Rate', '82 /min']], 'v1hs'),
       systemicExamination: termRows([['ABDOMEN', 'Soft, non-tender'], ['HEART', 'S1 S2 normal, no murmur'], ['LUNG', 'Clear']], 'v1se'),
       investigationResults: termRows([['Blood Sugar', 'FBS 9.2 mmol/L'], ['Urine R/E', 'Sugar +, protein nil']], 'v1ir'),
       referredBy: '', referredTo: '',
       chiefComplaints: textRows('v1cc', ['Increased thirst and frequent urination for 3 weeks', 'Occasional headache']),
       diagnosis: textRows('v1dx', ['Type 2 diabetes mellitus (newly detected)', 'Hypertension, stage 1']),
-      generalExaminations: textRows('v1ge', ['BP 148/92 mmHg (right arm, sitting)']),
+      generalExaminations: [],
       investigations: textRows('v1inv', ['HbA1c', 'Lipid profile', 'Serum creatinine', 'Urine ACR']),
       ancPncNotes: textRows('v1anc', ['N/A']),
       rxList: rxRows('v1', [['Tab.', 'Metformin', '500 mg', '1-0-1', '30 days', 'After meals'], ['Tab.', 'Amlodipine', '5 mg', '1-0-0', '30 days', 'Morning']]),
@@ -59,16 +72,16 @@ const SAMPLE_VISITS = {
       followUps: textRows('v1fu', ['After 2 weeks with reports']),
     },
     {
-      id: 9002, date: 'Tuesday, 20 September 2022',
+      id: 9002, date: 'Tuesday, 20 September 2022', dateISO: '2022-09-20',
       heightFeet: '5', heightInch: '9', weight: '82', bmi: '26.70', bsa: '1.98',
       onExamination: termRows([['ANEMIA', 'Absent'], ['DEHYDRATION', 'Mild'], ['JAUNDICE', 'Absent']], 'v2oe'),
-      healthScreening: termRows([['Temperature', '100.2 °F'], ['Pulse Rate', '92 /min']], 'v2hs'),
-      systemicExamination: termRows([['ABDOMEN', 'Soft, non-tender'], ['HEART', 'Normal'], ['LUNG', 'Clear, no wheeze']], 'v2se'),
+      healthScreening: termRows([['Blood Pressure', '138/86 mmHg'], ['Temperature', '100.2 °F'], ['Pulse Rate', '92 /min']], 'v2hs'),
+      systemicExamination: termRows([['THROAT', 'Congested, no exudate'], ['ABDOMEN', 'Soft, non-tender'], ['HEART', 'Normal'], ['LUNG', 'Clear, no wheeze']], 'v2se'),
       investigationResults: [],
       referredBy: '', referredTo: '',
       chiefComplaints: textRows('v2cc', ['Fever, sore throat and runny nose for 2 days', 'Dry cough']),
       diagnosis: textRows('v2dx', ['Acute upper respiratory tract infection (viral)']),
-      generalExaminations: textRows('v2ge', ['Throat congested, no exudate', 'BP 138/86 mmHg']),
+      generalExaminations: [],
       investigations: textRows('v2inv', ['N/A']),
       ancPncNotes: textRows('v2anc', ['N/A']),
       rxList: rxRows('v2', [['Tab.', 'Napa', '500 mg', '1-1-1', '3 days', 'If fever > 100 °F'], ['Tab.', 'Cetirizine', '10 mg', '0-0-1', '5 days', 'At bedtime'], ['Tab.', 'Metformin', '500 mg', '1-0-1', 'Continue', 'After meals'], ['Tab.', 'Amlodipine', '5 mg', '1-0-0', 'Continue', 'Morning']]),
@@ -76,16 +89,16 @@ const SAMPLE_VISITS = {
       followUps: textRows('v2fu', ['If fever persists beyond 3 days']),
     },
     {
-      id: 9003, date: 'Tuesday, 15 November 2022',
+      id: 9003, date: 'Tuesday, 15 November 2022', dateISO: '2022-11-15',
       heightFeet: '5', heightInch: '9', weight: '80', bmi: '26.05', bsa: '1.96',
       onExamination: termRows([['ANEMIA', 'Absent'], ['DEHYDRATION', 'Absent'], ['JAUNDICE', 'Absent']], 'v3oe'),
-      healthScreening: termRows([['Temperature', '98.2 °F'], ['Pulse Rate', '76 /min']], 'v3hs'),
-      systemicExamination: termRows([['ABDOMEN', 'Soft, non-tender'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v3se'),
+      healthScreening: termRows([['Blood Pressure', '128/80 mmHg'], ['Temperature', '98.2 °F'], ['Pulse Rate', '76 /min']], 'v3hs'),
+      systemicExamination: termRows([['FOOT', 'Sensation intact, no ulcer'], ['ABDOMEN', 'Soft, non-tender'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v3se'),
       investigationResults: termRows([['Blood Sugar', 'FBS 7.1 mmol/L'], ['Lipid profile', 'LDL 3.4 mmol/L'], ['ECG', 'Normal sinus rhythm']], 'v3ir'),
       referredBy: '', referredTo: 'Ophthalmology (annual retinal screening)',
       chiefComplaints: textRows('v3cc', ['Routine diabetes and hypertension follow-up', 'No new complaints']),
       diagnosis: textRows('v3dx', ['Type 2 diabetes mellitus, improving control', 'Hypertension, controlled']),
-      generalExaminations: textRows('v3ge', ['BP 128/80 mmHg', 'Foot examination: sensation intact, no ulcer']),
+      generalExaminations: [],
       investigations: textRows('v3inv', ['HbA1c after 3 months', 'Urine ACR']),
       ancPncNotes: textRows('v3anc', ['N/A']),
       rxList: rxRows('v3', [['Tab.', 'Metformin', '500 mg', '1-0-1', '60 days', 'After meals'], ['Tab.', 'Amlodipine', '5 mg', '1-0-0', '60 days', 'Morning']]),
@@ -95,16 +108,16 @@ const SAMPLE_VISITS = {
   ],
   2: [
     {
-      id: 9004, date: 'Thursday, 10 November 2022',
+      id: 9004, date: 'Thursday, 10 November 2022', dateISO: '2022-11-10',
       heightFeet: '5', heightInch: '4', weight: '62', bmi: '23.46', bsa: '1.66',
       onExamination: termRows([['ANEMIA', 'Mild pallor'], ['DEHYDRATION', 'Absent'], ['JAUNDICE', 'Absent']], 'v4oe'),
-      healthScreening: termRows([['Temperature', '98.0 °F'], ['Pulse Rate', '88 /min']], 'v4hs'),
-      systemicExamination: termRows([['ABDOMEN', 'Uterus corresponds to ~20 weeks'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v4se'),
+      healthScreening: termRows([['Blood Pressure', '112/70 mmHg'], ['Temperature', '98.0 °F'], ['Pulse Rate', '88 /min']], 'v4hs'),
+      systemicExamination: termRows([['EDEMA', 'Absent'], ['ABDOMEN', 'Uterus corresponds to ~20 weeks'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v4se'),
       investigationResults: termRows([['Blood Sugar', 'Random 5.4 mmol/L'], ['Urine R/E', 'Normal'], ['Ultrasound', 'Single live fetus, normal liquor']], 'v4ir'),
       referredBy: '', referredTo: '',
       chiefComplaints: textRows('v4cc', ['Routine antenatal check-up', 'Mild fatigue']),
       diagnosis: textRows('v4dx', ['Pregnancy ~20 weeks, mild anemia']),
-      generalExaminations: textRows('v4ge', ['BP 112/70 mmHg', 'No pedal edema']),
+      generalExaminations: [],
       investigations: textRows('v4inv', ['CBC with Hb', 'Serum ferritin']),
       ancPncNotes: textRows('v4anc', ['Gravida 1, Para 0', 'Fetal movement felt', 'Tetanus toxoid dose advised']),
       rxList: rxRows('v4', [['Tab.', 'Ferrous fumarate + folic acid', '', '1-0-0', '30 days', 'After lunch, not with tea'], ['Tab.', 'Calcium', '500 mg', '0-0-1', '30 days', 'At night']]),
@@ -114,16 +127,16 @@ const SAMPLE_VISITS = {
   ],
   3: [
     {
-      id: 9005, date: 'Saturday, 05 November 2022',
+      id: 9005, date: 'Saturday, 05 November 2022', dateISO: '2022-11-05',
       heightFeet: '5', heightInch: '6', weight: '70', bmi: '24.91', bsa: '1.79',
       onExamination: termRows([['ANEMIA', 'Absent'], ['DEHYDRATION', 'Absent'], ['JAUNDICE', 'Absent']], 'v5oe'),
-      healthScreening: termRows([['Temperature', '97.9 °F'], ['Pulse Rate', '72 /min']], 'v5hs'),
-      systemicExamination: termRows([['ABDOMEN', 'Soft'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v5se'),
+      healthScreening: termRows([['Blood Pressure', '152/94 mmHg'], ['Temperature', '97.9 °F'], ['Pulse Rate', '72 /min']], 'v5hs'),
+      systemicExamination: termRows([['KNEES', 'Crepitus bilaterally, no effusion'], ['ABDOMEN', 'Soft'], ['HEART', 'Normal'], ['LUNG', 'Clear']], 'v5se'),
       investigationResults: termRows([['ECG', 'Left ventricular hypertrophy pattern'], ['Urine R/E', 'Normal']], 'v5ir'),
       referredBy: '', referredTo: '',
       chiefComplaints: textRows('v5cc', ['Knee pain on walking for 3 months', 'Known hypertension, irregular medication']),
       diagnosis: textRows('v5dx', ['Hypertension', 'Osteoarthritis of both knees']),
-      generalExaminations: textRows('v5ge', ['BP 152/94 mmHg', 'Bilateral knee crepitus, no effusion']),
+      generalExaminations: [],
       investigations: textRows('v5inv', ['X-ray both knees (weight bearing)', 'Serum creatinine']),
       ancPncNotes: textRows('v5anc', ['N/A']),
       rxList: rxRows('v5', [['Tab.', 'Amlodipine', '5 mg', '1-0-0', '30 days', 'Morning, daily without gaps'], ['Tab.', 'Napa', '500 mg', '1-0-1', '10 days', 'If pain; avoid NSAIDs']]),
@@ -147,16 +160,73 @@ const generateSerialNumber = () => {
   return `${day}${month}${year}-${random}`;
 };
 
-const calculateAge = (dob) => {
+const calculateAge = (dob, onDate) => {
   if (!dob) return '—';
   const birthDate = new Date(dob);
   if (isNaN(birthDate.getTime())) return '—';
-  const today = new Date();
+  const today = onDate instanceof Date && !isNaN(onDate.getTime()) ? onDate : new Date();
   let age = today.getFullYear() - birthDate.getFullYear();
   const monthDiff = today.getMonth() - birthDate.getMonth();
   if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
   if (age < 0) return '—';
   return `${age} years`;
+};
+
+const formatDate = (d) => {
+  const x = d instanceof Date ? d : new Date(d);
+  return isNaN(x.getTime()) ? '' : x.toLocaleDateString('en-GB');
+};
+
+// Date of a saved visit (dateISO for new records; falls back to parsing the long text date of older ones).
+const visitDateOf = (visit) => {
+  if (!visit) return null;
+  const d = new Date(visit.dateISO || visit.date);
+  return isNaN(d.getTime()) ? null : d;
+};
+
+// Items that actually carry content (empty strings and the auto-filled "N/A" are not content).
+const realItems = (items, key = 'text') => (items || []).filter(i => {
+  const v = i && i[key];
+  return typeof v === 'string' && v.trim() && v.trim() !== 'N/A';
+});
+
+const formatVitals = (c) => {
+  const parts = [];
+  if (c?.heightFeet || c?.heightInch) parts.push(`Ht ${c.heightFeet || 0}′ ${c.heightInch || 0}″`);
+  if (c?.weight) parts.push(`Wt ${c.weight} kg`);
+  if (parseFloat(c?.bmi) > 0) parts.push(`BMI ${c.bmi}`);
+  if (parseFloat(c?.bsa) > 0) parts.push(`BSA ${c.bsa} m²`);
+  return parts.join(' · ');
+};
+
+const groupVisitsByYear = (visits) => {
+  const groups = {};
+  (visits || []).forEach((visit, index) => {
+    const d = visitDateOf(visit);
+    const year = d ? String(d.getFullYear()) : 'Undated';
+    (groups[year] = groups[year] || []).push({ visit, index });
+  });
+  return Object.keys(groups).sort().map(year => ({ year, items: groups[year] }));
+};
+
+// Older saved visits kept the Investigation section under "generalExaminations"; move it to "investigations".
+const migrateVisit = (v) => {
+  if (realItems(v.investigations).length === 0 && realItems(v.generalExaminations).length > 0) {
+    return { ...v, investigations: v.generalExaminations, generalExaminations: [] };
+  }
+  return v;
+};
+
+const Avatar = ({ name, size = 40 }) => {
+  const words = (name || '?').split(/\s+/).filter(w => w && !/^dr\.?$/i.test(w));
+  const initials = words.slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+  const palette = ['#0CAAFF', '#4264D0', '#28CD85', '#8B5CF6', '#F08A24', '#14B8A6'];
+  const color = palette[[...(name || '')].reduce((a, ch) => a + ch.charCodeAt(0), 0) % palette.length];
+  return (
+    <div className="rounded-full flex items-center justify-center font-bold text-white shrink-0" style={{ width: size, height: size, background: color, fontSize: size * 0.36 }}>
+      {initials}
+    </div>
+  );
 };
 
 const formatDobForDisplay = (dob) => {
@@ -196,15 +266,26 @@ const fillNA = (sectionKey, items) => {
   return [{ id: Date.now(), text: 'N/A' }];
 };
 
-const saveSectionToBackend = async (patientId, visitId, sectionName, data) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const key = `backend_autosave_${patientId}_${visitId}_${sectionName}`;
-      localStorage.setItem(key, JSON.stringify({ patientId, visitId, sectionName, data, savedAt: new Date().toISOString() }));
-      console.log(`✅ [AUTO-SAVE] "${sectionName}" saved for patient ${patientId}`, data);
-      resolve({ success: true, key });
-    }, 200);
-  });
+// Every step of a prescription is sent to the backend (backend/backendPlugin.js), which writes one JSON file per step.
+const STEP_ORDER = { clinicalExamination: 0, chiefComplaints: 1, diagnosis: 2, investigations: 3, ancPnc: 4, rx: 5, advice: 6, followUps: 7, finalPrescription: 8 };
+
+const saveSectionToBackend = async (patient, visitId, step, data) => {
+  const payload = {
+    patient: { id: patient?.id, name: patient?.name, serial: patient?.serial, dob: patient?.dob, gender: patient?.gender },
+    visitId, step, order: STEP_ORDER[step] ?? 99, data,
+  };
+  try {
+    const res = await fetch('/api/prescription-step', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (!res.ok || !json.success) throw new Error(json.error || `HTTP ${res.status}`);
+    return json; // { success: true, file }
+  } catch (err) {
+    console.warn(`Backend not reachable for step "${step}"; keeping a copy in the browser only.`, err);
+    try { // fallback copy (uploaded file contents left out to stay within storage limits)
+      localStorage.setItem(`backend_autosave_${patient?.id}_${visitId}_${step}`, JSON.stringify({ ...payload, savedAt: new Date().toISOString() }, (k, v) => (k === 'dataUrl' ? undefined : v)));
+    } catch { /* storage full or unavailable */ }
+    return { success: false, error: err.message };
+  }
 };
 
 // ==========================================
@@ -1006,29 +1087,36 @@ const EditPatientModal = ({ isOpen, onClose, onSave, initialData }) => {
 // ==========================================
 // PRESCRIPTION PRINT PREVIEW
 // ==========================================
-const PrescriptionPreviewModal = ({ isOpen, onClose, onSave, patient, chiefComplaints, diagnosis, generalExaminations, investigations, ancPncNotes, rxList, adviceList, followUps, mode = 'new' }) => {
+const BulletList = ({ items }) => (
+  <ul className="list-disc pl-5 space-y-1 text-sm">{items.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
+);
+
+const TermList = ({ rows }) => (
+  <ul className="space-y-0.5 text-sm">{rows.map(r => <li key={r.id}><span className="font-semibold">{r.term}:</span> {r.value}</li>)}</ul>
+);
+
+const PrescriptionPreviewModal = ({ isOpen, onClose, onSave, patient, clinical, visitDate, chiefComplaints, diagnosis, investigations, ancPncNotes, rxList, adviceList, followUps, mode = 'new' }) => {
   if (!isOpen) return null;
-  const filterValid = (items) => (items || []).filter(item => {
-    if (typeof item === 'string') return item.trim();
-    return Object.values(item || {}).some(value => typeof value === 'string' && value.trim());
-  });
-  const validComplaints = filterValid(chiefComplaints);
-  const validDiagnosis = filterValid(diagnosis);
-  const validExaminations = filterValid(generalExaminations);
-  const validInvestigations = filterValid(investigations);
-  const validAncPnc = filterValid(ancPncNotes);
-  const validRx = (rxList || []).filter(rx => rx.medicine && rx.medicine.trim());
-  const validAdvice = filterValid(adviceList);
-  const validFollowUps = filterValid(followUps);
-  const formatRx = (rx) => [rxName(rx), rx.dosage, rx.duration, rx.instruction].filter(Boolean).join('  —  ');
+  const c = clinical || patient || {};
+  const when = visitDate instanceof Date && !isNaN(visitDate.getTime()) ? visitDate : new Date();
 
-  const filterTermRows = (rows) => (rows || []).filter(r => (r.term && r.term.trim()) || (r.value && r.value.trim()));
-  const validOnExam = filterTermRows(patient?.onExamination);
-  const validHealthScreening = filterTermRows(patient?.healthScreening);
-  const validSystemicExam = filterTermRows(patient?.systemicExamination);
-  const validInvResults = filterTermRows(patient?.investigationResults);
+  const complaints = realItems(chiefComplaints);
+  const dx = realItems(diagnosis);
+  const invs = realItems(investigations);
+  const anc = realItems(ancPncNotes);
+  const advice = realItems(adviceList);
+  const follow = realItems(followUps);
+  const rx = realItems(rxList, 'medicine');
 
-  const renderTermRow = (hs) => <TermChip key={hs.id} row={hs} />;
+  // Only findings that actually have a value are printed (no empty "TERM: —" lines).
+  const filledRows = (rows) => (rows || []).filter(r => r.term && r.term.trim() && r.value && String(r.value).trim());
+  const onExam = filledRows(c.onExamination);
+  const screening = filledRows(c.healthScreening);
+  const systemic = filledRows(c.systemicExamination);
+  const vitals = formatVitals(c);
+  const formatRx = (item) => [rxName(item), item.dosage, item.duration, item.instruction].filter(Boolean).join('  —  ');
+
+  const NA = <span className="text-[#808493] text-sm italic">N/A</span>;
 
   return (
     <div className="fixed inset-0 bg-[#2B324B]/60 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
@@ -1044,109 +1132,87 @@ const PrescriptionPreviewModal = ({ isOpen, onClose, onSave, patient, chiefCompl
         <div className="flex-1 overflow-y-auto custom-scrollbar p-5">
           <div id="print-area" className="print-prescription bg-white mx-auto w-full max-w-[794px] min-h-[1123px] shadow-md border border-[#E2E5EA] px-10 py-8 text-[#2B324B]">
             <div className="text-center border-b-2 border-[#2B324B] pb-3 mb-4">
-              <h1 className="text-3xl font-bold text-[#2B324B]">Dr. Tanim Moontasir</h1>
-              <p className="text-sm text-[#2B324B] mt-1">MBBS, FCPS (Medicine), MD (Pulmonology)</p>
-              <p className="text-xs text-[#4264D0] font-semibold mt-1">Consultant - Internal Medicine & Pulmonology</p>
-              <p className="text-xs text-[#808493] mt-1">Ibn Sina Hospital, Dhanmondi, Dhaka | Chamber: 5 PM - 9 PM (Closed Friday)</p>
-              <p className="text-xs text-[#808493]">Mobile: +880 1711-000000 | BMDC Reg No: A-12345</p>
+              <h1 className="text-3xl font-bold text-[#2B324B]">{DOCTOR_PROFILE.name}</h1>
+              <p className="text-sm text-[#2B324B] mt-1">{DOCTOR_PROFILE.degrees}</p>
+              <p className="text-xs text-[#4264D0] font-semibold mt-1">{DOCTOR_PROFILE.speciality}</p>
+              {DOCTOR_PROFILE.chamber && <p className="text-xs text-[#808493] mt-1">{DOCTOR_PROFILE.chamber}</p>}
+              {(DOCTOR_PROFILE.phone || DOCTOR_PROFILE.regNo) && (
+                <p className="text-xs text-[#808493]">{[DOCTOR_PROFILE.phone && `Mobile: ${DOCTOR_PROFILE.phone}`, DOCTOR_PROFILE.regNo && `BMDC Reg No: ${DOCTOR_PROFILE.regNo}`].filter(Boolean).join(' | ')}</p>
+              )}
             </div>
 
             <div className="flex flex-wrap justify-between items-center gap-2 text-sm border-b border-[#DDE1E7] pb-3 mb-4">
               <p><span className="font-semibold">Name:</span> {patient?.name || '—'}</p>
-              <p><span className="font-semibold">Age:</span> {patient?.dob ? calculateAge(patient.dob) : '—'}</p>
+              <p><span className="font-semibold">Age:</span> {patient?.dob ? calculateAge(patient.dob, when) : '—'}</p>
               <p><span className="font-semibold">Gender:</span> {patient?.gender || '—'}</p>
-              <p><span className="font-semibold">Date:</span> {new Date().toLocaleDateString('en-GB')}</p>
+              <p><span className="font-semibold">Date:</span> {formatDate(when)}</p>
               <p><span className="font-semibold">Serial:</span> {patient?.serial || '—'}</p>
             </div>
 
-            {validOnExam.length > 0 && (
-              <div className="mb-3 pb-2 border-b border-dashed border-[#DDE1E7]">
-                <h3 className="font-bold text-sm mb-1">On Examination:</h3>
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">{validOnExam.map(renderTermRow)}</div>
-              </div>
-            )}
-
-            {validHealthScreening.length > 0 && (
-              <div className="mb-3 pb-2 border-b border-dashed border-[#DDE1E7]">
-                <h3 className="font-bold text-sm mb-1">Health Screening:</h3>
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">{validHealthScreening.map(renderTermRow)}</div>
-              </div>
-            )}
-
-            {validSystemicExam.length > 0 && (
-              <div className="mb-3 pb-2 border-b border-dashed border-[#DDE1E7]">
-                <h3 className="font-bold text-sm mb-1">Systemic Examination:</h3>
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">{validSystemicExam.map(renderTermRow)}</div>
-              </div>
-            )}
-
-            {validInvResults.length > 0 && (
-              <div className="mb-4 pb-3 border-b border-dashed border-[#DDE1E7]">
-                <h3 className="font-bold text-sm mb-1">Investigation Results:</h3>
-                <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm">{validInvResults.map(renderTermRow)}</div>
-              </div>
-            )}
-
-            <div className="flex gap-6 min-h-[580px]">
-              <div className="w-1/3 space-y-4 pr-4 border-r border-dashed border-[#DDE1E7]">
-                <section>
-                  <h3 className="font-bold text-base mb-1">C/C:</h3>
-                  {validComplaints.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-1 text-sm">{validComplaints.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
-                </section>
+            <div className="flex gap-6 min-h-[760px]">
+              {/* LEFT: findings and assessment */}
+              <div className="w-[38%] space-y-4 pr-4 border-r border-dashed border-[#DDE1E7]">
                 <section>
                   <h3 className="font-bold text-base mb-1">O/E:</h3>
-                  {validExaminations.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-1 text-sm">{validExaminations.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
+                  {!vitals && onExam.length === 0 && screening.length === 0 ? NA : (
+                    <div className="space-y-1">
+                      {vitals && <p className="text-sm">{vitals}</p>}
+                      {onExam.length > 0 && <TermList rows={onExam} />}
+                      {screening.length > 0 && <TermList rows={screening} />}
+                    </div>
                   )}
                 </section>
                 <section>
-                  <h3 className="font-bold text-base mb-1">Diagnosis:</h3>
-                  {validDiagnosis.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-1 text-sm">{validDiagnosis.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
+                  <h3 className="font-bold text-base mb-1">S/E:</h3>
+                  {systemic.length === 0 ? NA : <TermList rows={systemic} />}
                 </section>
                 <section>
-                  <h3 className="font-bold text-base mb-1">Investigation:</h3>
-                  {validInvestigations.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-1 text-sm">{validInvestigations.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
+                  <h3 className="font-bold text-base mb-1">C/C:</h3>
+                  {complaints.length === 0 ? NA : <BulletList items={complaints} />}
+                </section>
+                <section>
+                  <h3 className="font-bold text-base mb-1">Dx:</h3>
+                  {dx.length === 0 ? NA : <BulletList items={dx} />}
                 </section>
                 <section>
                   <h3 className="font-bold text-base mb-1">ANC/PNC Notes:</h3>
-                  {validAncPnc.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-1 text-sm">{validAncPnc.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
+                  {anc.length === 0 ? NA : <BulletList items={anc} />}
                 </section>
               </div>
 
-              <div className="w-2/3 space-y-6">
+              {/* RIGHT: treatment and plan */}
+              <div className="w-[62%] space-y-6">
                 <section>
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-3xl font-serif font-bold text-[#2B324B]">℞</span>
                     <h3 className="font-bold text-base">Medications</h3>
                   </div>
-                  {validRx.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
+                  {rx.length === 0 ? NA : (
                     <ol className="space-y-3 text-sm">
-                      {validRx.map((rx, index) => (
-                        <li key={rx.id} className="flex gap-3"><span className="font-semibold w-5">{index + 1}.</span><span className="flex-1">{formatRx(rx)}</span></li>
+                      {rx.map((item, index) => (
+                        <li key={item.id || index} className="flex gap-3"><span className="font-semibold w-5">{index + 1}.</span><span className="flex-1">{formatRx(item)}</span></li>
                       ))}
                     </ol>
                   )}
                 </section>
                 <section>
                   <h3 className="font-bold text-base mb-2 border-b border-[#DDE1E7] pb-1">Advice:</h3>
-                  {validAdvice.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-2 text-sm">{validAdvice.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
+                  {advice.length === 0 ? NA : <BulletList items={advice} />}
+                </section>
+                <section>
+                  <h3 className="font-bold text-base mb-2 border-b border-[#DDE1E7] pb-1">Investigation:</h3>
+                  {invs.length === 0 ? NA : <BulletList items={invs} />}
                 </section>
                 <section>
                   <h3 className="font-bold text-base mb-2 border-b border-[#DDE1E7] pb-1">Follow-up:</h3>
-                  {validFollowUps.length === 0 ? <span className="text-[#808493] text-sm italic">N/A</span> : (
-                    <ul className="list-disc pl-5 space-y-2 text-sm">{validFollowUps.map((item, i) => <li key={item.id || i}>{item.text}</li>)}</ul>
-                  )}
+                  {follow.length === 0 ? NA : <BulletList items={follow} />}
                 </section>
+                {(c.referredBy || c.referredTo) && (
+                  <section>
+                    <h3 className="font-bold text-base mb-2 border-b border-[#DDE1E7] pb-1">Referral:</h3>
+                    <p className="text-sm">{[c.referredBy && `Referred by: ${c.referredBy}`, c.referredTo && `Referred to: ${c.referredTo}`].filter(Boolean).join('  |  ')}</p>
+                  </section>
+                )}
               </div>
             </div>
 
@@ -1179,7 +1245,6 @@ const VisitSummaryModal = ({ isOpen, onClose, visit, patient }) => {
   });
   const validComplaints = filterValid(visit.chiefComplaints);
   const validDiagnosis = filterValid(visit.diagnosis);
-  const validExaminations = filterValid(visit.generalExaminations);
   const validInvestigations = filterValid(visit.investigations);
   const validAncPnc = filterValid(visit.ancPncNotes);
   const validRx = (visit.rxList || []).filter(rx => rx.medicine && rx.medicine.trim());
@@ -1209,7 +1274,7 @@ const VisitSummaryModal = ({ isOpen, onClose, visit, patient }) => {
           <div className="mb-6 p-4 bg-[#0CAAFF]/5 rounded-2xl border border-[#0CAAFF]/10">
             <p className="text-xs text-[#808493] mb-1">Patient</p>
             <h3 className="text-lg font-bold text-[#2B324B]">{patient?.name}</h3>
-            <p className="text-xs text-[#808493] mt-1">ID: {patient?.serial} • Age: {calculateAge(patient?.dob)} • Gender: {patient?.gender}</p>
+            <p className="text-xs text-[#808493] mt-1">ID: {patient?.serial} • Age: {calculateAge(patient?.dob, visitDateOf(visit))} • Gender: {patient?.gender}</p>
           </div>
 
           {validOnExam.length > 0 && (
@@ -1248,10 +1313,8 @@ const VisitSummaryModal = ({ isOpen, onClose, visit, patient }) => {
               )}
             </div>
             <div className="bg-[#F4F6F8] p-4 rounded-2xl">
-              <h4 className="text-xs font-bold text-[#0CAAFF] uppercase tracking-wider mb-2">On Examination (O/E)</h4>
-              {validExaminations.length === 0 ? <p className="text-sm text-[#808493] italic">N/A</p> : (
-                <ul className="space-y-1 text-sm text-[#2B324B]">{validExaminations.map((item, i) => <li key={i}>• {item.text}</li>)}</ul>
-              )}
+              <h4 className="text-xs font-bold text-[#0CAAFF] uppercase tracking-wider mb-2">Vitals</h4>
+              {formatVitals(visit) ? <p className="text-sm text-[#2B324B]">{formatVitals(visit)}</p> : <p className="text-sm text-[#808493] italic">N/A</p>}
             </div>
             <div className="bg-[#F4F6F8] p-4 rounded-2xl">
               <h4 className="text-xs font-bold text-[#0CAAFF] uppercase tracking-wider mb-2">Diagnosis</h4>
@@ -1442,10 +1505,10 @@ const TopNav = () => (
     <div className="flex items-center gap-6 ml-6">
       <button type="button" className="relative p-2 text-[#808493] hover:text-[#0CAAFF]"><Bell size={20} /></button>
       <div className="flex items-center gap-3 border-l pl-6 border-[#F4F6F8]">
-        <img src="https://i.pravatar.cc/150?img=68" alt="Doctor" className="w-10 h-10 rounded-full object-cover" />
+        <Avatar name={DOCTOR_PROFILE.name} size={40} />
         <div className="hidden md:block">
-          <h4 className="text-sm font-semibold text-[#2B324B]">Dr. Russell Micheal</h4>
-          <p className="text-xs text-[#808493]">micheal.dr@gmail.com</p>
+          <h4 className="text-sm font-semibold text-[#2B324B]">{DOCTOR_PROFILE.name}</h4>
+          <p className="text-xs text-[#808493]">{DOCTOR_PROFILE.speciality}</p>
         </div>
       </div>
     </div>
@@ -1541,7 +1604,7 @@ const PatientListPage = ({ patients, selectedPatient, onSelectPatient, onAddNew,
             <div className="p-6 pb-0 shrink-0">
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-5">
-                  <img src={`https://i.pravatar.cc/150?u=${selectedPatient.id}`} alt="Patient" className="w-20 h-20 rounded-full object-cover" />
+                  <Avatar name={selectedPatient.name} size={80} />
                   <div>
                     <h2 className="text-xl font-bold text-[#2B324B] mb-1">{selectedPatient.name}</h2>
                     <p className="text-sm text-[#808493] mb-0.5">ID: {selectedPatient.serial}</p>
@@ -1601,7 +1664,7 @@ const PatientListPage = ({ patients, selectedPatient, onSelectPatient, onAddNew,
                     <div className="border-t border-[#F4F6F8]">
                       {[
                         { label: 'Blood Group', value: selectedPatient.bloodGroup },
-                        { label: 'Allergies', value: 'None reported' },
+                        { label: 'Allergies', value: selectedPatient.tags?.filter(t => t.toLowerCase().includes('allerg')).join(', ') || 'None reported' },
                         { label: 'Chronic Conditions', value: selectedPatient.tags?.filter(t => t.toLowerCase().includes('diabetic') || t.toLowerCase().includes('pressure')).join(', ') || 'None' },
                       ].map((row, i) => (
                         <div key={i} className="flex justify-between py-3 border-b border-[#F4F6F8] text-sm">
@@ -1622,13 +1685,15 @@ const PatientListPage = ({ patients, selectedPatient, onSelectPatient, onAddNew,
                       <p className="text-sm">No visit history available for this patient.</p>
                     </div>
                   ) : (
-                    <div>
+                    <div className="space-y-6">
+                      {groupVisitsByYear(selectedPatient.visitHistory).map(({ year, items: yearVisits }) => (
+                      <div key={year}>
                       <div className="flex items-center mb-4">
                         <div className="w-3 h-3 rounded-full bg-[#808493] border-2 border-white shadow-sm -ml-1.5 mr-3"></div>
-                        <div className="bg-[#808493] text-white text-xs font-medium px-4 py-1.5 rounded-lg flex-1">Year: {new Date().getFullYear()}</div>
+                        <div className="bg-[#808493] text-white text-xs font-medium px-4 py-1.5 rounded-lg flex-1">{year === 'Undated' ? 'Undated visits' : `Year: ${year}`}</div>
                       </div>
                       <div className="pl-6 space-y-4">
-                        {selectedPatient.visitHistory.map((visit, index) => (
+                        {yearVisits.map(({ visit, index }) => (
                           <div key={visit.id} className="bg-[#E8F4FF] rounded-2xl p-4 border border-[#0CAAFF]/10">
                             <div className="flex justify-between items-center mb-4">
                               <h4 className="font-bold text-[#2B324B]">Visit: {index + 1}</h4>
@@ -1638,17 +1703,19 @@ const PatientListPage = ({ patients, selectedPatient, onSelectPatient, onAddNew,
                               </div>
                             </div>
                             <div className="flex flex-wrap gap-2 mb-4">
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Chief Complaint ({visit.chiefComplaints?.length || 0})</span>
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Diagnosis ({visit.diagnosis?.length || 0})</span>
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Investigation ({visit.generalExaminations?.length || 0})</span>
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">ANC/PNC ({visit.ancPncNotes?.length || 0})</span>
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Rx ({visit.rxList?.length || 0})</span>
-                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Advice ({visit.adviceList?.length || 0})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Chief Complaint ({realItems(visit.chiefComplaints).length})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Diagnosis ({realItems(visit.diagnosis).length})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Investigation ({realItems(visit.investigations).length})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">ANC/PNC ({realItems(visit.ancPncNotes).length})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Rx ({realItems(visit.rxList, 'medicine').length})</span>
+                              <span className="bg-white border-l-2 border-[#0CAAFF] text-[#2B324B] text-xs px-3 py-1.5 rounded-lg shadow-sm">Advice ({realItems(visit.adviceList).length})</span>
                             </div>
                             <p className="text-xs text-[#808493] text-right mt-2">{visit.date}</p>
                           </div>
                         ))}
                       </div>
+                      </div>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -1686,6 +1753,7 @@ export default function App() {
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, patient: null });
   const [completedSections, setCompletedSections] = useState([]);
   const [currentVisitId, setCurrentVisitId] = useState(null);
+  const [lastSave, setLastSave] = useState(null);
 
   const [patientsList, setPatientsList] = useState(() => {
     const savedVersion = localStorage.getItem('appDataVersion');
@@ -1695,8 +1763,13 @@ export default function App() {
       localStorage.setItem('patientsList', JSON.stringify(INITIAL_PATIENTS));
       return INITIAL_PATIENTS;
     }
-    // Demo safety net: stale saved data (e.g. after hot-reload) gets the synthetic visits back.
-    return JSON.parse(saved).map(pt => (SAMPLE_VISITS[pt.id] && (!pt.visitHistory || pt.visitHistory.length === 0)) ? { ...pt, visitHistory: SAMPLE_VISITS[pt.id], visits: Math.max(pt.visits || 0, SAMPLE_VISITS[pt.id].length) } : pt);
+    return JSON.parse(saved).map(pt => {
+      const migrated = { ...pt, visitHistory: (pt.visitHistory || []).map(migrateVisit) };
+      // Demo safety net: stale saved data (e.g. after hot-reload) gets the synthetic visits back.
+      return (SAMPLE_VISITS[pt.id] && migrated.visitHistory.length === 0)
+        ? { ...migrated, visitHistory: SAMPLE_VISITS[pt.id], visits: Math.max(pt.visits || 0, SAMPLE_VISITS[pt.id].length) }
+        : migrated;
+    });
   });
 
   useEffect(() => {
@@ -1706,7 +1779,6 @@ export default function App() {
 
   const [chiefComplaints, setChiefComplaints] = useState([{ id: 1, text: '' }]);
   const [diagnosis, setDiagnosis] = useState([{ id: 1, text: '' }]);
-  const [generalExaminations, setGeneralExaminations] = useState([{ id: 1, text: '' }]);
   const [investigations, setInvestigations] = useState([{ id: 1, text: '' }]);
   const [ancPncNotes, setAncPncNotes] = useState([{ id: 1, text: '' }]);
   const [rxList, setRxList] = useState([{ id: 1, medicine: '', dosage: '', duration: '', instruction: '' }]);
@@ -1766,9 +1838,9 @@ export default function App() {
     setCurrentVisitId(newVisitId);
     setCompletedSections([]);
     setActivePatient({ ...selectedPatient, ...clinicalData });
+    saveSectionToBackend(selectedPatient, newVisitId, 'clinicalExamination', clinicalData).then(saved => setLastSave({ ok: !!saved.success, file: saved.file }));
     setChiefComplaints([{ id: 1, text: '' }]);
     setDiagnosis([{ id: 1, text: '' }]);
-    setGeneralExaminations([{ id: 1, text: '' }]);
     setInvestigations([{ id: 1, text: '' }]);
     setAncPncNotes([{ id: 1, text: '' }]);
     setRxList([{ id: 1, medicine: '', dosage: '', duration: '', instruction: '' }]);
@@ -1799,7 +1871,7 @@ export default function App() {
     switch (key) {
       case 'chiefComplaints': return chiefComplaints;
       case 'diagnosis': return diagnosis;
-      case 'investigations': return generalExaminations;
+      case 'investigations': return investigations;
       case 'ancPnc': return ancPncNotes;
       case 'rx': return rxList;
       case 'advice': return adviceList;
@@ -1812,7 +1884,7 @@ export default function App() {
     switch (key) {
       case 'chiefComplaints': return setChiefComplaints;
       case 'diagnosis': return setDiagnosis;
-      case 'investigations': return setGeneralExaminations;
+      case 'investigations': return setInvestigations;
       case 'ancPnc': return setAncPncNotes;
       case 'rx': return setRxList;
       case 'advice': return setAdviceList;
@@ -1826,7 +1898,8 @@ export default function App() {
     const finalData = fillNA(sectionKey, rawData);
     const setter = getSectionSetter(sectionKey);
     if (setter) setter(finalData);
-    await saveSectionToBackend(activePatient.id, currentVisitId, sectionKey, finalData);
+    const saved = await saveSectionToBackend(activePatient, currentVisitId, sectionKey, finalData);
+    setLastSave({ ok: !!saved.success, file: saved.file });
     setCompletedSections(prev => [...prev, sectionKey]);
   };
 
@@ -1850,7 +1923,8 @@ export default function App() {
     const visitRecord = {
       id: currentVisitId || Date.now(),
       date: new Date().toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' }),
-      chiefComplaints, diagnosis, generalExaminations, investigations, ancPncNotes, rxList, adviceList, followUps,
+      dateISO: new Date().toISOString().slice(0, 10),
+      chiefComplaints, diagnosis, investigations, ancPncNotes, rxList, adviceList, followUps,
       heightFeet: activePatient.heightFeet, heightInch: activePatient.heightInch, weight: activePatient.weight,
       bmi: activePatient.bmi, bsa: activePatient.bsa,
       onExamination: activePatient.onExamination,
@@ -1859,6 +1933,8 @@ export default function App() {
       investigationResults: activePatient.investigationResults,
       referredBy: activePatient.referredBy, referredTo: activePatient.referredTo,
     };
+
+    saveSectionToBackend(activePatient, currentVisitId, 'finalPrescription', visitRecord).then(saved => setLastSave({ ok: !!saved.success, file: saved.file }));
 
     setPatientsList(prev => prev.map(p => {
       if (p.id === activePatient.id) {
@@ -1873,7 +1949,7 @@ export default function App() {
       setSelectedPatient(prev => ({ ...prev, visits: (prev.visits || 0) + 1, visitHistory: [...existingHistory, visitRecord] }));
     }
 
-    const dataToSave = { timestamp: new Date().toISOString(), patient: activePatient, chiefComplaints, diagnosis, generalExaminations, investigations, ancPncNotes, rxList, adviceList, followUps };
+    const dataToSave = { timestamp: new Date().toISOString(), patient: activePatient, chiefComplaints, diagnosis, investigations, ancPncNotes, rxList, adviceList, followUps };
     const jsonString = JSON.stringify(dataToSave, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -1940,20 +2016,25 @@ export default function App() {
             <div className="flex flex-col h-full overflow-y-auto custom-scrollbar">
               <div className="flex justify-between items-center mb-4">
                 <button type="button" onClick={handleBackToDashboard} className="text-sm text-[#0CAAFF] font-medium flex items-center gap-1 hover:underline">← Back to Patient List</button>
-                <div className="flex items-center gap-2 text-xs text-[#808493]">
+                <div className="flex items-center gap-4 text-xs text-[#808493]">
+                  {lastSave && (
+                    <span className={lastSave.ok ? 'text-[#28CD85]' : 'text-[#E0565F]'} title={lastSave.file || ''}>
+                      {lastSave.ok ? `✓ Saved to backend: ${lastSave.file.split('/').pop()}` : '⚠ Backend not reachable — saved in browser only'}
+                    </span>
+                  )}
                   <span>Progress: {completedSections.length} / {SECTION_ORDER.length} sections complete</span>
                 </div>
               </div>
 
               <div className="flex rounded-3xl overflow-hidden shadow-sm border border-[#F4F6F8] mb-4 shrink-0 h-28">
                 <div className="w-1/2 bg-[#0CAAFF]/10 h-full relative">
-                  <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Medical Background" className="w-full h-full object-cover opacity-80" />
+                  <div className="w-full h-full flex items-center justify-center"><Activity size={44} className="text-[#0CAAFF]/50" /></div>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#4264D0]/40 to-transparent"></div>
                 </div>
                 <div className="w-1/2 bg-[#0CAAFF]/5 px-4 py-3 flex flex-col justify-center">
-                  <h2 className="text-base font-bold text-[#2B324B] mb-1">Dr. Tanim Moontasir</h2>
-                  <p className="text-xs text-[#808493]"><span className="font-semibold text-[#2B324B]">Degrees:</span> MCPS (UK), FCPS (IND), FRCP (UK), MBBS (BD), MD (Pulmonology)</p>
-                  <p className="text-xs text-[#808493]"><span className="font-semibold text-[#2B324B]">Speciality:</span> Internal Medicine & General Surgery</p>
+                  <h2 className="text-base font-bold text-[#2B324B] mb-1">{DOCTOR_PROFILE.name}</h2>
+                  <p className="text-xs text-[#808493]"><span className="font-semibold text-[#2B324B]">Degrees:</span> {DOCTOR_PROFILE.degrees}</p>
+                  <p className="text-xs text-[#808493]"><span className="font-semibold text-[#2B324B]">Speciality:</span> {DOCTOR_PROFILE.speciality}</p>
                 </div>
               </div>
 
@@ -1962,7 +2043,7 @@ export default function App() {
                   <p>Name: <span className="font-semibold text-[#2B324B]">{activePatient.name}</span></p>
                   <p>Age: <span className="font-semibold text-[#2B324B]">{activePatient.dob ? calculateAge(activePatient.dob) : '—'}</span></p>
                   <p>Gender: <span className="font-semibold text-[#2B324B]">{activePatient.gender}</span></p>
-                  <p>Date: <span className="font-semibold text-[#2B324B]">{new Date().toLocaleDateString()}</span></p>
+                  <p>Date: <span className="font-semibold text-[#2B324B]">{formatDate(new Date())}</span></p>
                 </div>
                 <button type="button" onClick={() => setIsExamSummaryOpen(true)} title="View clinical examination summary" className="flex items-center gap-1.5 text-xs font-medium text-[#0CAAFF] bg-[#0CAAFF]/10 hover:bg-[#0CAAFF]/20 px-3 py-1.5 rounded-full transition-colors">
                   <ClipboardList size={14} /> Summary
@@ -1975,7 +2056,7 @@ export default function App() {
 
                   <SequentialSection title="Diagnosis" sectionKey="diagnosis" items={diagnosis} isActive={activeSection === 'diagnosis'} isCompleted={completedSections.includes('diagnosis')} onAdd={() => handleAdd(setDiagnosis, diagnosis)} onChange={(id, field, value) => handleChange(setDiagnosis, diagnosis, id, field, value)} onDelete={(id) => handleDelete(setDiagnosis, diagnosis, id)} onComplete={() => handleCompleteSection('diagnosis')} onEdit={() => handleReopenSection('diagnosis')} />
 
-                  <SequentialSection title="Investigation" sectionKey="investigations" items={generalExaminations} isActive={activeSection === 'investigations'} isCompleted={completedSections.includes('investigations')} onAdd={() => handleAdd(setGeneralExaminations, generalExaminations)} onChange={(id, field, value) => handleChange(setGeneralExaminations, generalExaminations, id, field, value)} onDelete={(id) => handleDelete(setGeneralExaminations, generalExaminations, id)} onComplete={() => handleCompleteSection('investigations')} onEdit={() => handleReopenSection('investigations')} />
+                  <SequentialSection title="Investigation" sectionKey="investigations" items={investigations} isActive={activeSection === 'investigations'} isCompleted={completedSections.includes('investigations')} onAdd={() => handleAdd(setInvestigations, investigations)} onChange={(id, field, value) => handleChange(setInvestigations, investigations, id, field, value)} onDelete={(id) => handleDelete(setInvestigations, investigations, id)} onComplete={() => handleCompleteSection('investigations')} onEdit={() => handleReopenSection('investigations')} />
 
                   <SequentialSection title="ANC/PNC Notes" sectionKey="ancPnc" items={ancPncNotes} isActive={activeSection === 'ancPnc'} isCompleted={completedSections.includes('ancPnc')} onAdd={() => handleAdd(setAncPncNotes, ancPncNotes)} onChange={(id, field, value) => handleChange(setAncPncNotes, ancPncNotes, id, field, value)} onDelete={(id) => handleDelete(setAncPncNotes, ancPncNotes, id)} onComplete={() => handleCompleteSection('ancPnc')} onEdit={() => handleReopenSection('ancPnc')} />
                 </div>
@@ -2014,9 +2095,9 @@ export default function App() {
       <AddPrescriptionModal isOpen={isAddPrescriptionModalOpen} onClose={() => setIsAddPrescriptionModalOpen(false)} onSave={handleContinueToWriter} patient={selectedPatient} />
       <DeleteConfirmationModal isOpen={deleteModal.isOpen} onClose={() => setDeleteModal({ isOpen: false, patient: null })} onConfirm={handleDeletePatient} patientName={deleteModal.patient?.name} />
 
-      <PrescriptionPreviewModal isOpen={isPreviewModalOpen} onClose={() => setIsPreviewModalOpen(false)} onSave={handleSavePrescription} patient={activePatient} chiefComplaints={chiefComplaints} diagnosis={diagnosis} generalExaminations={generalExaminations} investigations={investigations} ancPncNotes={ancPncNotes} rxList={rxList} adviceList={adviceList} followUps={followUps} />
+      <PrescriptionPreviewModal isOpen={isPreviewModalOpen} onClose={() => setIsPreviewModalOpen(false)} onSave={handleSavePrescription} patient={activePatient} clinical={activePatient} chiefComplaints={chiefComplaints} diagnosis={diagnosis} investigations={investigations} ancPncNotes={ancPncNotes} rxList={rxList} adviceList={adviceList} followUps={followUps} />
 
-      <PrescriptionPreviewModal isOpen={isVisitPrescriptionOpen} onClose={() => setIsVisitPrescriptionOpen(false)} onSave={() => { }} mode="view" patient={selectedPatient} chiefComplaints={selectedVisit?.chiefComplaints || []} diagnosis={selectedVisit?.diagnosis || []} generalExaminations={selectedVisit?.generalExaminations || []} investigations={selectedVisit?.investigations || []} ancPncNotes={selectedVisit?.ancPncNotes || []} rxList={selectedVisit?.rxList || []} adviceList={selectedVisit?.adviceList || []} followUps={selectedVisit?.followUps || []} />
+      <PrescriptionPreviewModal isOpen={isVisitPrescriptionOpen} onClose={() => setIsVisitPrescriptionOpen(false)} onSave={() => { }} mode="view" patient={selectedPatient} clinical={selectedVisit} visitDate={visitDateOf(selectedVisit)} chiefComplaints={selectedVisit?.chiefComplaints || []} diagnosis={selectedVisit?.diagnosis || []} investigations={selectedVisit?.investigations || []} ancPncNotes={selectedVisit?.ancPncNotes || []} rxList={selectedVisit?.rxList || []} adviceList={selectedVisit?.adviceList || []} followUps={selectedVisit?.followUps || []} />
 
       <ClinicalExamSummaryModal isOpen={isExamSummaryOpen} onClose={() => setIsExamSummaryOpen(false)} patient={activePatient} />
 
